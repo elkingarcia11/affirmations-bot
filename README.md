@@ -26,20 +26,13 @@ This project automates the process of posting affirmations on Twitter by selecti
    cd twitter-auto-tweeting-app
    ```
 
-2. Create a virtual environment:
-
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-   ```
-
-3. Install dependencies:
+2. Install dependencies:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Set up Twitter API credentials by creating a `.env` file in the root directory:
+3. Set up Twitter API credentials by creating a `.env` file in the root directory:
 
    ```env
    TWITTER_CONSUMER_KEY=your_consumer_key

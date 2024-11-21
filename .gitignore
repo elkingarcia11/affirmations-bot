@@ -1,0 +1,6 @@
+__pycache__
+assets/evening
+assets/morning
+assets/night
+.env
+.DS_Store

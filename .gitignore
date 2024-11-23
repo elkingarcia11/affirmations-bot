@@ -5,3 +5,4 @@ assets/night
 .env
 .DS_Store
 affirmations.csv
+service_account_credentials.json

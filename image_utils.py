@@ -1,6 +1,7 @@
 import os
 import uuid
 from PIL import Image, ImageDraw, ImageFont
+import io
 
 # Image Creation Functions
 def wrap_text(draw, text, font, max_width):
@@ -23,14 +24,20 @@ def wrap_text(draw, text, font, max_width):
     lines.append(current_line)  # Add the last line
     return lines
 
-def draw_in_center(text, filepath, state):
-    # Load the image
-    image = Image.open(filepath)
+def draw_in_center(text, blob, state, font_blob):
+    # Load the image# Download the image as bytes
+    image_bytes = blob.download_as_bytes()
+
+    # Load the image into PIL
+    image = Image.open(io.BytesIO(image_bytes))
     draw = ImageDraw.Draw(image)
     
     # Set font and size
     try:
-        font = ImageFont.truetype("assets/PlayfairDisplay.ttf", size=50)  # Update font path if needed
+        # Download the font blob as bytes 
+        font_bytes = blob.download_as_bytes() 
+        # Load the font into PIL ImageFont 
+        font = ImageFont.truetype(io.BytesIO(font_bytes), size=100)
     except IOError:
         print("Font not found. Ensure font is in the directory or provide the correct path.")
         return None
@@ -72,11 +79,11 @@ def add_image_to(image, output_filepath):
         os.makedirs(output_filepath)
     
     # Generate a unique filename using UUID (v4)
-    unique_filename = f"{uuid.uuid4().hex}.jpg"
+    unique_filename = "image.jpg"
     
     # Save the modified image with a unique name
     output_path = os.path.join(output_filepath, unique_filename)
-    
+    print(output_path)
     # Get the original format of the image
     original_format = image.format  # This is 'JPEG', 'PNG', etc.
 
@@ -90,32 +97,3 @@ def add_image_to(image, output_filepath):
     else:
         # For other formats (e.g., TIFF), save as is
         image.save(output_path)
-
-# Loop for generating an image for each text in csv file
-def loop_through(data):
-    for data_point in data:
-        # Assuming each data_point is a list, with the first element being the text
-        text = data_point[0]  # Adjust based on your CSV structure
-
-        import_filepath = "assets/morning.jpg"
-        output_filepath = "assets/morning"
-        state = "morning"
-        image = draw_in_center(text, import_filepath, state)
-        add_image_to(image, output_filepath, state)
-
-        import_filepath = "assets/evening.jpg"
-        output_filepath = "assets/evening"
-        state = "evening"
-        image = draw_in_center(text, import_filepath, state)
-        add_image_to(image, output_filepath, state)
-
-        import_filepath = "assets/night.jpg"
-        output_filepath = "assets/night"
-        state = "night"
-        image = draw_in_center(text, import_filepath, state)
-        add_image_to(image, output_filepath, state)
-# Example Usage:
-# Read CSV and process
-# data = read_csv_from("assets/affirmations.csv")
-# Loop through data and create an image for each data point
-# loop_through(data)

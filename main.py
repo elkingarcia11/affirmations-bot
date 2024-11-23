@@ -1,18 +1,29 @@
-import csv
-import random
-import date_utils
 import csv_utils
+import date_utils
 import image_utils
+import gcs_utils
 import datetime
+import random
 from twitter_client import TwitterClient
 
 def tweet_random_line_from_csv():
-    # Get the current UTC time 
-    now = datetime.datetime.now(datetime.timezone.utc)
+    # File paths
+    file_paths = {
+        "morning": "morning.jpg",
+        "evening": "evening.jpg",
+        "night": "night.jpg",
+        "font": "PlayfairDisplay.ttf",
+        "affirmations_csv": "assets/affirmations.csv"
+    }
 
-    sub_ranges = date_utils.define_sub_ranges(now)
-    sub_range_index = date_utils.check_sub_ranges(now, sub_ranges)
-    text = csv_utils.get_random_text_from_csv("assets/affirmations.csv")
+    # Get bucket from GCS
+    bucket = gcs_utils.get_gcs_bucket("affirmations-bot")
+
+    # Get blobs from GCS Bucket
+    blobs = gcs_utils.get_blobs_from(bucket, file_paths)
+
+   
+    # List of affirmations for twitter captions
     affirmations = [
         "Today is the perfect day to manifest greatness. 🕊️",
         "Claim this energy today. ✨",
@@ -38,31 +49,35 @@ def tweet_random_line_from_csv():
         "Dream it, believe it, achieve it. The journey is yours. 🛤️",
         "This is your sign to keep manifesting. Magic is real. 🔥",
     ]
-    text, import_filepath, state, output_filepath = "","","", "assets/image.jpg"
+
+    # Get text for the image
+    image_text = csv_utils.get_random_text_from_csv(file_paths["affirmations_csv"])
+
+    # Determine time of day
+    now = datetime.datetime.now(datetime.timezone.utc)
+    sub_ranges = date_utils.get_time_ranges(now)
+    sub_range_index, state = date_utils.get_active_range_index(now, sub_ranges)
 
     if sub_range_index == 1:
-        print("Current UTC time is between 12:00 PM and 5:59 PM UTC.")
-        import_filepath = "assets/morning.jpg"
-        state = "morning"
+        image_blob = blobs[0]
     elif sub_range_index == 2:
-        print("Current UTC time is between 6:00 PM and 11:59 PM UTC.")
-        import_filepath = "assets/evening.jpg"
-        state = "evening"
+        image_blob = blobs[1]
     else:
-        # sub_range_index == 3:
-        print("Current UTC time is between 12:00 AM and 4:59 AM UTC.")
-        import_filepath = "assets/night.jpg"
-        state = "night"
-    
-    image = image_utils.draw_in_center(text, import_filepath, state)
-    image_utils.add_image_to(image,"assets/image.jpg")
+        image_blob = blobs[2]
+
+    # Generate image
+    try:
+        image = image_utils.draw_in_center(image_text, image_blob, state, blobs[3])
+        image_utils.add_image_to(image, "/tmp/")
+    except Exception as e:
+        print(f"Error generating image: {e}")
+        return
+
+    # Post tweet
     try:
         twitter_client = TwitterClient()
-        text = random.choice(affirmations)
-        twitter_client.post_tweet(text[0], image)
+        twitter_client.post_tweet(random.choice(affirmations), "/tmp/image.jpg")
     except Exception as e:
-        print(f"An unexpected error occurred while processing news: {e}")
-
-        
+        print(f"An unexpected error occurred while tweeting affirmation: {e}")
 
 tweet_random_line_from_csv()

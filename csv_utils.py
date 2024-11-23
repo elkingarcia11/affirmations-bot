@@ -1,14 +1,15 @@
 import random
 import csv
 
-# Read input from csv file
-def read_csv_from(filepath):
-    with open(filepath, newline='') as csvfile:
-        reader = csv.reader(csvfile)
-        return list(reader)  # Read all rows into a list
-
-# Get one random text from csv file
-def get_random_text_from_csv(filepath):
-    data = read_csv_from(filepath)
-    text = random.choice(data)
-    return text
+def get_random_text_from_csv(csv_file):
+    with open(csv_file, 'r') as f:
+        reader = csv.reader(f)
+        rows = list(reader)
+        return random.choice(rows)[0]
+# Example Usage
+"""
+filepath = "example.csv"  # Update this with the correct path to your CSV file
+random_text = get_random_text_from_csv(filepath)
+if random_text:
+    print(f"Random Text: {random_text}")
+"""

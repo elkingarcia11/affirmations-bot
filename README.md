@@ -41,14 +41,20 @@ This project automates the process of posting affirmations on Twitter by selecti
    TWITTER_ACCESS_TOKEN_SECRET=your_access_token_secret
    ```
 
+
+4. Add your Google Cloud Storage Service Account Credentials in a file called `service_account_credentials.json` and add `GOOGLE_APPLICATION_CREDENTIALS=service_account_credentials.json` to the `.env` file in the root directory
+
 ## Usage
 
 1. Add your affirmation texts to `assets/affirmations.csv`. Each line in the CSV should contain one affirmation text.
 
-2. Place your image files in the `assets/` directory. The app will use these images as backgrounds for the affirmation text. Example images:
-   - `assets/morning.jpg`
-   - `assets/evening.jpg`
-   - `assets/night.jpg`
+2. Place your image files in a Google Cloud Storage bucket directory. The app will use these images as backgrounds for the affirmation text. Example images:
+   - `morning.jpg`
+   - `evening.jpg`
+   - `night.jpg`
+
+3. Place your font file in a Google Cloud Storage bucket directory. The app will use this font for the affirmation text in the image. Example font:
+   - `PlayfairDisplay.ttf`
 
 3. Run the script to start posting random affirmations:
 
@@ -76,6 +82,7 @@ This project automates the process of posting affirmations on Twitter by selecti
 ├── image_utils.py     # Image manipulation utilities
 ├── date_utils.py      # Date and time utilities
 └── csv_utils.py       # CSV handling utilities
+└── gcs_utils.py       # Google Cloud Storage handling utilities
 ```
 
 ## Modules
@@ -94,6 +101,10 @@ Defines sub-ranges of the day (morning, evening, night) and checks which sub-ran
 
 ### `csv_utils.py`
 Handles reading affirmations from the CSV file and selecting a random affirmation.
+
+
+### `gcs_utils.py`
+Handles fetching ad processing files from a Google Cloud Storage bucket.
 
 ## Contributing
 

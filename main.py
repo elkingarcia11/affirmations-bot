@@ -12,8 +12,7 @@ def tweet_random_line_from_csv():
         "morning": "morning.jpg",
         "evening": "evening.jpg",
         "night": "night.jpg",
-        "font": "PlayfairDisplay.ttf",
-        "affirmations_csv": "assets/affirmations.csv"
+        "font": "PlayfairDisplay.ttf"
     }
 
     # Get bucket from GCS
@@ -51,7 +50,7 @@ def tweet_random_line_from_csv():
     ]
 
     # Get text for the image
-    image_text = csv_utils.get_random_text_from_csv(file_paths["affirmations_csv"])
+    image_text = csv_utils.get_random_text_from_csv("assets/affirmations.csv")
 
     # Determine time of day
     now = datetime.datetime.now(datetime.timezone.utc)
@@ -79,5 +78,6 @@ def tweet_random_line_from_csv():
         twitter_client.post_tweet(random.choice(affirmations), "/tmp/image.jpg")
     except Exception as e:
         print(f"An unexpected error occurred while tweeting affirmation: {e}")
+
 
 tweet_random_line_from_csv()

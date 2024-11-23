@@ -31,13 +31,17 @@ def draw_in_center(text, blob, state, font_blob):
     # Load the image into PIL
     image = Image.open(io.BytesIO(image_bytes))
     draw = ImageDraw.Draw(image)
-    
+
     # Set font and size
     try:
-        # Download the font blob as bytes 
-        font_bytes = blob.download_as_bytes() 
+        # Save the font blob to tmp folder
+        output_path = os.path.join("/tmp/", "font.ttf")
+
+        # Download the blob to the temporary file 
+        font_blob.download_to_filename(output_path)
+
         # Load the font into PIL ImageFont 
-        font = ImageFont.truetype(io.BytesIO(font_bytes), size=100)
+        font = ImageFont.truetype(output_path, size=100)
     except IOError:
         print("Font not found. Ensure font is in the directory or provide the correct path.")
         return None
@@ -83,17 +87,9 @@ def add_image_to(image, output_filepath):
     
     # Save the modified image with a unique name
     output_path = os.path.join(output_filepath, unique_filename)
-    print(output_path)
+
     # Get the original format of the image
     original_format = image.format  # This is 'JPEG', 'PNG', etc.
 
     # Save the image while preserving its original quality
-    if original_format == 'JPEG':
-        # Set quality to 95 to maintain high quality
-        image.save(output_path, format='JPEG', quality=95, optimize=True)
-    elif original_format == 'PNG':
-        # Save as PNG without compression loss
-        image.save(output_path, format='PNG', compress_level=0)  # compress_level=0 for lossless compression
-    else:
-        # For other formats (e.g., TIFF), save as is
-        image.save(output_path)
+    image.save(output_path)

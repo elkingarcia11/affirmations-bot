@@ -1,7 +1,5 @@
 __pycache__
-assets/evening
-assets/morning
-assets/night
+assets
 .env
 .DS_Store
 affirmations.csv

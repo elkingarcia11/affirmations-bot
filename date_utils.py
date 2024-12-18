@@ -23,15 +23,3 @@ def get_active_range_index(now, sub_ranges):
         if start <= now <= end:
             return i + 1, label  # Return sub-range index and label
     return None, None  # If no sub-range matches
-
-# Example Usage
-"""
-now = datetime.now()  # Replace with any datetime object
-sub_ranges = get_time_ranges(now)
-index, label = get_active_range_index(now, sub_ranges)
-
-if index:
-    print(f"Current time falls into range {index}: {label}.")
-else:
-    print("Current time does not fall into any defined range.")
-"""

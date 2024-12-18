@@ -1,7 +1,7 @@
 import os
 import tweepy
-from dotenv import load_dotenv
 import tempfile
+from dotenv import load_dotenv
 
 class TwitterClient:
     def __init__(self):
@@ -94,6 +94,7 @@ class TwitterClient:
             print(f"Tweeted: {text}")
         except tweepy.TweepyException as e:
             print(f"Tweepy Exception: {e}")
+            print(text)
         except FileNotFoundError as e:
             print(e)
         except Exception as e:

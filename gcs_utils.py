@@ -19,6 +19,12 @@ def get_blobs_from(bucket, file_paths):
         blobs.append(blob)
     return blobs
 
+
+def get_blob_from(bucket, file_path):
+    blob = bucket.blob(file_path)
+    return blob
+
+
 # Example Usage
 """
 BUCKET_NAME = "my-bucket-name"  # Replace with your bucket name

@@ -8,7 +8,7 @@ This project automates the process of posting affirmations on Twitter by selecti
 
 - **Random Tweet Generation**: Selects random affirmations from a CSV file.
 - **Dynamic Image Creation**: Overlays affirmation text on images for visual appeal.
-- **Time-Based Tweeting**: Tweets change based on the time of day (morning, evening, night).
+- **Time-Based Tweeting**: Tweets type change based on the hour of the day.
 - **Twitter Integration**: Automatically posts tweets to a Twitter account using Tweepy.
 
 ## Prerequisites
@@ -49,9 +49,9 @@ This project automates the process of posting affirmations on Twitter by selecti
 1. Add your affirmation texts to `assets/affirmations.csv`. Each line in the CSV should contain one affirmation text.
 
 2. Place your image files in a Google Cloud Storage bucket directory. The app will use these images as backgrounds for the affirmation text. Example images:
-   - `morning.jpg`
-   - `evening.jpg`
-   - `night.jpg`
+   - `dark.jpg`
+   - `dark1.jpg`
+   - `dark2.jpg`
 
 3. Place your font file in a Google Cloud Storage bucket directory. The app will use this font for the affirmation text in the image. Example font:
    - `PlayfairDisplay.ttf`
@@ -72,15 +72,11 @@ This project automates the process of posting affirmations on Twitter by selecti
 ```
 .
 ├── assets/
-│   ├── morning.jpg
-│   ├── evening.jpg
-│   ├── night.jpg
 │   └── affirmations.csv
 ├── twitter_client.py  # Handles Twitter API interactions
 ├── main.py            # Main script that runs the app
 ├── requirements.txt   # List of dependencies
 ├── image_utils.py     # Image manipulation utilities
-├── date_utils.py      # Date and time utilities
 └── csv_utils.py       # CSV handling utilities
 └── gcs_utils.py       # Google Cloud Storage handling utilities
 ```
@@ -96,12 +92,8 @@ Runs the main logic of the app, including selecting a random affirmation, genera
 ### `image_utils.py`
 Contains functions to overlay text on images, center text, and save the generated images with a unique filename.
 
-### `date_utils.py`
-Defines sub-ranges of the day (morning, evening, night) and checks which sub-range the current time falls into.
-
 ### `csv_utils.py`
 Handles reading affirmations from the CSV file and selecting a random affirmation.
-
 
 ### `gcs_utils.py`
 Handles fetching ad processing files from a Google Cloud Storage bucket.

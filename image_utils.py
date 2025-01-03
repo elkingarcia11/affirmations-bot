@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 import random
 import os
+import io
 
 # Wrap text function
 def wrap_text(draw, text, font, max_width):
@@ -21,34 +22,48 @@ def wrap_text(draw, text, font, max_width):
     lines.append(current_line)  # Add the last line
     return lines
 
-# Function to generate image with text
-def generate_image(text, font_blob):
-    gradient_pairs = [
-        ("#e0f7fa", "#00796b"),  # Serene Blue
-        ("#f3e5f5", "#6a1b9a"),  # Radiant Purple
-        ("#e8f5e9", "#2e7d32"),  # Peaceful Green
-        ("#fffde7", "#f57f17"),  # Warm Yellow
-        ("#fce4ec", "#ad1457"),  # Gentle Pink
-        ("#efebe9", "#4e342e"),  # Earthy Brown
-        ("#fafafa", "#424242"),  # Calming Gray
-        ("#fff3e0", "#e65100"),  # Energizing Orange
-        ("#e0f2f1", "#004d40"),  # Tranquil Teal
-        ("#e3f2fd", "#0d47a1"),  # Mystic Blue
-        ("#ede7f6", "#4527a0"),  # Spiritual Violet
-        ("#fbe9e7", "#bf360c"),  # Cozy Coral
-        ("#f9fbe7", "#827717"),  # Earthly Olive
-        ("#e8eaf6", "#1a237e"),  # Deep Indigo
-        ("#edeff2", "#2c3e50"),  # Sophisticated Slate
-        ("#ffebee", "#b71c1c"),  # Rose Glow
-        ("#e1f5fe", "#01579b")   # Crystal Blue
+# Function to generate image from list of colors
+def generate_image_from_colors(text, font_blob):
+    colors = [
+        "#e0f7fa",  # Serene Blue
+        "#f3e5f5",  # Radiant Purple
+        "#e8f5e9",  # Peaceful Green
+        "#fffde7",  # Warm Yellow
+        "#fce4ec",  # Gentle Pink
+        "#efebe9",  # Earthy Brown
+        "#fafafa",  # Calming Gray
+        "#fff3e0",  # Energizing Orange
+        "#e0f2f1",  # Tranquil Teal
+        "#e3f2fd",  # Mystic Blue
+        "#ede7f6",  # Spiritual Violet
+        "#fbe9e7",  # Cozy Coral
+        "#f9fbe7",  # Earthly Olive
+        "#e8eaf6",  # Deep Indigo
+        "#edeff2",  # Sophisticated Slate
+        "#ffebee",  # Rose Glow
+        "#e1f5fe",  # Crystal Blue
     ]
-    background_color, text_color = random.choice(gradient_pairs)
+    background_color = random.choice(colors)
 
     # Image dimensions
     width, height = 1080, 1080
     image = Image.new("RGB", (width, height), background_color)
-    draw = ImageDraw.Draw(image)
+    return generate_image(image, width, height, text, font_blob)
 
+def generate_image_from_blob(blob, text, font_blob):
+
+    # Download the blob content as bytes
+    blob_data = blob.download_as_bytes()
+    
+    # Load the image using Pillow
+    image = Image.open(io.BytesIO(blob_data)).convert("RGBA")  # Ensure RGBA format for transparency
+    
+    # Image dimensions
+    width, height = 1080, 1080
+    return generate_image(image, width, height, text, font_blob)
+
+def generate_image(image, width, height, text, font_blob):
+    draw = ImageDraw.Draw(image)
     # Set font and size
     try:
         output_path = os.path.join("/tmp/", "font.ttf")
@@ -59,7 +74,7 @@ def generate_image(text, font_blob):
         return None
 
     # Wrap the text to fit the image width
-    lines = wrap_text(draw, text, font, width - 80)  # 80 is padding on both sides
+    lines = wrap_text(draw, text, font, width - 160)  # 120 is padding on both sides
 
     # Define the padding between lines
     padding = 10  # Padding between lines
@@ -84,19 +99,3 @@ def generate_image(text, font_blob):
         y_position += line_height + padding  # Add padding between lines
 
     return image
-
-
-# Add Image To Filepath
-def add_image_to(image, output_filepath):
-    # Ensure the output folder exists, if not, create it
-    if not os.path.exists(output_filepath):
-        os.makedirs(output_filepath)
-    
-    # Generate a unique filename using UUID (v4)
-    unique_filename = "image.jpg"
-    
-    # Save the modified image with a unique name
-    output_path = os.path.join(output_filepath, unique_filename)
-
-    # Save the image while preserving its original quality
-    image.save(output_path)
